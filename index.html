@@ -245,7 +245,7 @@
   .food-photo-card:hover { border-color: var(--color-border-info); }
   .food-photo-card.assigned { opacity: 0.4; cursor: default; }
   .food-photo-card.active-pick { border: 2px solid var(--color-border-info); }
-  .food-photo-card img { width: 100%; height: 110px; object-fit: cover; display: block; }
+  .food-photo-card img { width: 100%; height: auto; object-fit: contain; display: block; background: #fafafa; }
   .food-photo-rank {
     position: absolute; top: 4px; left: 4px;
     background: var(--color-background-info); color: var(--color-text-info);
@@ -269,7 +269,7 @@
     border-radius: var(--border-radius-md); margin-bottom: 6px;
     background: var(--color-background-primary);
   }
-  .food-result-row img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
+  .food-result-row img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
   .food-result-row .info { flex: 1; font-size: 13px; }
   .food-result-row .ranks { font-size: 12px; color: var(--color-text-secondary); }
   .nm-grid {
@@ -315,21 +315,28 @@
   }
 
   .ai-photo-wrap { margin: 12px 0; }
-  .ai-photo-wrap img { width: 100%; border-radius: var(--border-radius-md); display: block; }
+  .ai-photo-wrap img {
+    width: 100%; border-radius: var(--border-radius-md); display: block;
+    max-height: 420px; object-fit: contain; background: #fafafa;
+  }
   .ai-photo-caption {
-    text-align: center; font-size: 12px; margin-top: 4px;
-    color: var(--color-text-secondary); font-weight: 500;
+    text-align: center; font-size: 13px; margin-top: 6px;
+    color: var(--color-text-secondary); font-weight: 600;
   }
   .ai-reveal-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-    margin: 10px 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin: 12px 0;
   }
   .ai-reveal-grid .ai-photo-wrap { margin: 0; }
-  .ai-reveal-grid img { height: 180px; object-fit: cover; }
-  .ai-label-fake { color: var(--color-text-danger); }
-  .ai-label-real { color: var(--color-text-success); }
-  @media (max-width: 480px) {
-    .ai-reveal-grid img { height: 140px; }
+  .ai-reveal-grid img {
+    height: auto; max-height: 320px; min-height: 200px;
+    object-fit: contain; background: #fafafa;
+  }
+  .ai-label-fake { color: var(--color-text-danger); font-weight: 700; }
+  .ai-label-real { color: var(--color-text-success); font-weight: 700; }
+  @media (max-width: 600px) {
+    .ai-reveal-grid { grid-template-columns: 1fr; }
+    .ai-reveal-grid img { max-height: 280px; }
   }
 
   .nm-collabels {
@@ -344,36 +351,20 @@
 
 
 
-  .yt-wrap {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    overflow: hidden;
+  .sp-wrap {
     border-radius: var(--border-radius-md);
-    background: #000;
-    margin: 12px 0 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    overflow: hidden;
+    margin: 14px 0 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    background: #121212;
   }
-  .yt-wrap iframe {
-    position: absolute; top: 0; left: 0;
-    width: 100%; height: 100%;
+  .sp-wrap iframe {
+    width: 100%;
+    height: 152px;
     border: none;
+    display: block;
   }
 
-
-  .yt-fallback {
-    position: absolute;
-    bottom: 8px; right: 8px;
-    background: rgba(0,0,0,0.7);
-    color: white !important;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 11px;
-    text-decoration: none;
-    z-index: 2;
-    pointer-events: auto;
-  }
-  .yt-fallback:hover { background: rgba(0,0,0,0.9); }
 
   /* === DESIGN POLISH OVERRIDES === */
   .arcade-header {
@@ -579,7 +570,34 @@
     font-size: 11px;
     color: var(--color-text-secondary);
   }
-  .cat-btn { font-weight: 600; }
+  .cat-btn {
+    font-weight: 600;
+    border-width: 2px !important;
+    transition: all 0.12s;
+    background: var(--color-background-primary) !important;
+    color: var(--color-text-primary) !important;
+    border-color: var(--color-border-tertiary) !important;
+  }
+  .cat-btn:hover:not(:disabled) {
+    border-color: var(--color-accent-purple) !important;
+    background: var(--color-background-info) !important;
+  }
+  .cat-btn.selected {
+    background: linear-gradient(135deg, #9d4edd, #5a2dbf) !important;
+    color: white !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 8px rgba(157, 78, 221, 0.35);
+  }
+  .cat-btn.correct-pick {
+    background: linear-gradient(135deg, #5fcfa3, #1a7a3e) !important;
+    color: white !important;
+    border-color: transparent !important;
+  }
+  .cat-btn.wrong-pick {
+    background: linear-gradient(135deg, #ff8c5a, #c4174e) !important;
+    color: white !important;
+    border-color: transparent !important;
+  }
   /* Tiny avatars inside the answer buttons */
   .cat-btn .avatar {
     display: inline-block;
@@ -706,11 +724,11 @@
 
   // CHALLENGE 1: LYRICS
   const LYRICS_QS = [
-    { lang: 'ES Spanish', song: 'Rebotar - David Lohlein', yt: 'VghQOISmI3g', q: "What does 'Rebotar' mean in this songs context?", opts: ['To celebrate Christmas', 'To bounce / shake it (shake that ass)', 'To wrap a gift', 'To sing carols'], correct: 1 },
-    { lang: 'IT Italian', song: 'La Noia - Angelina Mango', yt: 'psiytW9Or2s', q: "What does 'La Noia' mean?", opts: ['The night', 'The boredom', 'The love', 'The dance'], correct: 1 },
-    { lang: 'FR French', song: 'Voila - Barbara Pravi (Eurovision 2021)', yt: '-9t_SwPN31s', q: "What does 'Voila' mean?", opts: ['Goodbye', 'Here it is / there you go', 'I love you', 'Forever'], correct: 1 },
-    { lang: 'ES Spanish', song: 'Bailando - Paradisio', yt: 'FI7noSQZ5TI', q: "What does 'Bailando' mean?", opts: ['Crying', 'Dancing', 'Burning', 'Flying'], correct: 1 },
-    { lang: 'TR Turkish', song: 'Gulumse Kaderine - Tarkan', yt: 'Skus894Lh_c', q: "What does 'Gulumse kaderine' mean?", opts: ['Run from your fate', 'Smile at your fate', 'Curse your fate', 'Forget your fate'], correct: 1 }
+    { lang: 'ES Spanish', song: 'Rebotar - David Lohlein', sp: '4goduFZnQvZNwJw1XoarRN', q: "What does 'Rebotar' mean in this songs context?", opts: ['To celebrate Christmas', 'To bounce / shake it (shake that ass)', 'To wrap a gift', 'To sing carols'], correct: 1 },
+    { lang: 'IT Italian', song: 'La Noia - Angelina Mango', sp: '49R1F3rIdSzuPk7AcHi6d1', q: "What does 'La Noia' mean?", opts: ['The night', 'The boredom', 'The love', 'The dance'], correct: 1 },
+    { lang: 'FR French', song: 'Voila - Barbara Pravi (Eurovision 2021)', sp: '0UVlOQ3EEiTVOctUOnJ00w', q: "What does 'Voila' mean?", opts: ['Goodbye', 'Here it is / there you go', 'I love you', 'Forever'], correct: 1 },
+    { lang: 'ES Spanish', song: 'Bailando - Paradisio', sp: '62XEe2tiS7YzJvkZRjAfRb', q: "What does 'Bailando' mean?", opts: ['Crying', 'Dancing', 'Burning', 'Flying'], correct: 1 },
+    { lang: 'TR Turkish', song: 'Gulumse Kaderine - Tarkan', sp: '7qAygdKAINgN0spGCqsSS1', q: "What does 'Gulumse kaderine' mean?", opts: ['Run from your fate', 'Smile at your fate', 'Curse your fate', 'Forget your fate'], correct: 1 }
   ];
   function renderLyrics() {
     const idx = view.data.idx || 0;
@@ -731,7 +749,7 @@
       return '<button class="' + cls + '" ' + (picked != null ? 'disabled' : '') + ' onclick="pickLyric(' + i + ')">' + o + '</button>';
     }).join('');
     const next = picked != null ? '<button class="submit-btn" onclick="nextLyric()">Next</button>' : '';
-    const player = q.yt ? '<div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/' + q.yt + '?rel=0&modestbranding=1" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><a class="yt-fallback" href="https://www.youtube.com/watch?v=' + q.yt + '" target="_blank" rel="noopener">Open on YouTube if it doesn\'t play</a></div>' : '';
+    const player = q.sp ? '<div class="sp-wrap"><iframe src="https://open.spotify.com/embed/track/' + q.sp + '?utm_source=generator&theme=0" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>' : '';
     return '<div class="challenge-view"><button class="back-btn" onclick="exitStation()">Map</button><div class="progress-dots">' + dots + '</div><p class="q-title">' + q.lang + ' - ' + q.song + '</p>' + player + '<p class="q-sub" style="margin-top:14px;">' + q.q + '</p>' + opts + next + '</div>';
   }
   window.pickLyric = function(i) {
@@ -1110,7 +1128,7 @@
       }).join('');
       var next = picked != null ? '<button class="submit-btn" onclick="nextPool()">Next</button>' : '';
       var dots = '<div class="progress-dot active"></div><div class="progress-dot"></div>';
-      return '<div class="challenge-view"><button class="back-btn" onclick="exitStation()">Map</button><div class="progress-dots">' + dots + '</div><p class="q-title">🍻 Pool party detective</p><p class="q-sub">Who was NOT at the pool party?</p><img src="' + POOL_PHOTO_1 + '" style="width:100%;max-height:340px;object-fit:cover;border-radius:var(--border-radius-md);margin-bottom:14px;" alt="pool party"/>' + opts + next + '</div>';
+      return '<div class="challenge-view"><button class="back-btn" onclick="exitStation()">Map</button><div class="progress-dots">' + dots + '</div><p class="q-title">🍻 Pool party detective</p><p class="q-sub">Who was NOT at the pool party?</p><img src="' + POOL_PHOTO_1 + '" style="width:100%;height:auto;object-fit:contain;border-radius:var(--border-radius-md);margin-bottom:14px;background:#fafafa;" alt="pool party"/>' + opts + next + '</div>';
     }
     if (step === 1) {
       var submitted = view.data.textSubmitted;
@@ -1121,7 +1139,7 @@
         result = '<p style="text-align:center;margin-top:10px;font-size:13px;color:' + (isCorrect ? 'var(--color-text-success)' : 'var(--color-text-danger)') + ';">' + (isCorrect ? 'Correct! Liselotte the 1-year-old baby drank zero beer. Sneaky trick.' : 'Nope. The trick answer was Liselotte (the 1-year-old baby - not even in this photo).') + '</p>';
       }
       var dots2 = '<div class="progress-dot done"></div><div class="progress-dot active"></div>';
-      return '<div class="challenge-view"><button class="back-btn" onclick="exitStation()">Map</button><div class="progress-dots">' + dots2 + '</div><p class="q-title">🍻 Pool party detective</p><p class="q-sub">Who drank the LEAST amount of beer in rage cage? Type your answer.</p><img src="' + POOL_PHOTO_2 + '" style="width:100%;max-height:340px;object-fit:cover;border-radius:var(--border-radius-md);margin-bottom:14px;" alt="rage cage"/><input type="text" id="pool-text-input" value="' + answer.replace(/"/g, '&quot;') + '" ' + (submitted ? 'disabled' : '') + ' oninput="view.data.textAnswer=this.value" placeholder="Type a name..." style="width:100%;padding:12px 14px;font-size:14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-secondary);color:var(--color-text-primary);box-sizing:border-box;"/>' + result + (!submitted ? '<button class="submit-btn" onclick="submitPoolText()">Lock in answer</button>' : '<button class="submit-btn" onclick="finishPool()">Finish station</button>') + '</div>';
+      return '<div class="challenge-view"><button class="back-btn" onclick="exitStation()">Map</button><div class="progress-dots">' + dots2 + '</div><p class="q-title">🍻 Pool party detective</p><p class="q-sub">Who drank the LEAST amount of beer in rage cage? Type your answer.</p><img src="' + POOL_PHOTO_2 + '" style="width:100%;height:auto;object-fit:contain;border-radius:var(--border-radius-md);margin-bottom:14px;background:#fafafa;" alt="rage cage"/><input type="text" id="pool-text-input" value="' + answer.replace(/"/g, '&quot;') + '" ' + (submitted ? 'disabled' : '') + ' oninput="view.data.textAnswer=this.value" placeholder="Type a name..." style="width:100%;padding:12px 14px;font-size:14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-secondary);color:var(--color-text-primary);box-sizing:border-box;"/>' + result + (!submitted ? '<button class="submit-btn" onclick="submitPoolText()">Lock in answer</button>' : '<button class="submit-btn" onclick="finishPool()">Finish station</button>') + '</div>';
     }
     return '<div class="challenge-view">Finishing...</div>';
   }
